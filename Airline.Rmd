@@ -1,0 +1,137 @@
+
+
+
+Data Preparation:
+
+Loading the Libraries
+```{r}
+library(ggplot2)
+library(tidyverse)
+library(tigerstats)
+library(tibble)
+library(dplyr)
+library(stringr)
+library(SmartEDA)
+library(kernlab)
+library(arules)
+library(readxl)
+library(readr)
+library(ggpubr)
+library(naniar)
+library(MASS)
+```
+
+Loading the Dataset
+```{r}
+
+data <- read.csv("C:/Users/prati/Downloads/AirlineSatisfaction/test.csv")
+head(data)
+```
+Observations and Attributes
+```{r}
+num_observations <- nrow(data)
+num_attributes <- ncol(data)
+result <- paste("Number of Observations:", num_observations, "\nNumber of Attributes:", num_attributes)
+cat(result)
+```
+Datatypes
+```{r}
+data_types <- sapply(data, class)
+data_types
+```
+Missing Values
+```{r}
+missing_values <- colSums(is.na(data))
+missing_values
+```
+Data Cleaning:
+
+```{r}
+library(dplyr)
+# Exclude the missing observations
+data <-data %>%
+na.omit()		
+dim(data)
+```
+```{r}
+missing_values <- colSums(is.na(data))
+missing_values
+```
+
+
+Data Exploration (EDA):
+
+Data Analysis
+
+Histogram
+```{r}
+ggplot(data, aes(x = Age, fill = Gender)) +
+  geom_histogram(binwidth = 5, fill= "red",color = "black", alpha = 0.7) +
+  labs(title = "Histogram of Age by Gender",
+       x = "Age",
+       y = "Frequency") +
+  facet_wrap(~Gender, scales = "free")
+```
+
+Boxplot
+```{r}
+ggplot(data, aes(x  = Flight.Distance)) +
+  geom_boxplot(fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Boxplot of Flight Distance",
+       x  = "Flight Distance")
+```
+
+```{r}
+boxplot(data$Flight.Distance, main = "Boxplot of Flight Distance",
+        xlab = "Flight Distance", horizontal = TRUE)
+```
+Overlaying Histogram
+```{r}
+ggplot(data, aes(x = Age,fill=Gender)) +
+geom_histogram(aes(fill = Gender),bins = 10, color="black")
+```
+
+```{r}
+dim(data)
+summary(data)
+
+```
+
+Hypothesis Testing
+
+```{r}
+random_sample <- data %>%
+  sample_n(50)
+
+head(random_sample, 20)
+
+```
+
+T-Test
+```{r}
+t.test(random_sample$Online.boarding, mu = mean(data$Online.boarding))
+
+```
+
+Linear Regression
+```{r}
+
+
+library(ggplot2)
+
+
+lm_model <- lm(Cleanliness ~ Checkin.service, data = data)
+
+#here we created a scatter plot with regression line
+ggplot(data, aes(x = Checkin.service, y = Cleanliness)) +
+  geom_point() +                # Scatter plot points
+  geom_smooth(method = "lm",    # Add linear regression line
+              se = FALSE,        # Don't show confidence interval
+              col = "blue") +    # Line color
+  labs(title = "Linear Regression: Checkin.service vs Cleanliness",
+       x = "Checkin.service",
+       y = "Cleanliness") +
+  theme_minimal()
+
+```
+
